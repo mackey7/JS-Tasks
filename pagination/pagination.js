@@ -1,14 +1,27 @@
 // Stwórz funkcję paginateArray
 const paginateArray = (dataEntries, settings) => {
-    const { actualPageId, entriesOnPage } = settings
-    if (actualPageId > 0 && Number.isInteger(actualPageId) && entriesOnPage > 0 && Number.isInteger(entriesOnPage) && dataEntries.length > (actualPageId * entriesOnPage)) {
+
+    let errorMesage = ""
+
+    if ((Array.isArray(dataEntries) && typeof settings === "object")) { //sprawdzanie typu danych wejściowych
+        const { actualPageId, entriesOnPage } = settings
         firstElToSlice = Math.round((actualPageId - 1) * entriesOnPage);
         secondElToSlice = Math.round(firstElToSlice + entriesOnPage);
-        const entriesOnSelectedPage = dataEntries.slice(firstElToSlice, secondElToSlice);
-        return entriesOnSelectedPage
+
+        if (actualPageId > 0 && entriesOnPage > 0 && dataEntries.length > 0) { // sprawdzanie czy podane wartości są większe od zera
+            firstElToSlice = Math.round((actualPageId - 1) * entriesOnPage);
+            secondElToSlice = Math.round(firstElToSlice + entriesOnPage);
+            const entriesOnSelectedPage = dataEntries.slice(firstElToSlice, secondElToSlice);
+            if (dataEntries.length > (actualPageId * entriesOnPage)) { //sprawdzanie czy podana strona istnieje
+                return entriesOnSelectedPage
+            } else {
+                return errorMesage = "nieprawidłowa strona";
+            }
+        } else {
+            return errorMesage = "Wartość wejściowa jest  mniejsza bądź równa zero";
+        }
     } else {
-        const entriesOnSelectedPage = "brak rekordów"
-        return entriesOnSelectedPage
+        return errorMesage = "błędny typ danych";
     }
 }
 
@@ -25,6 +38,8 @@ const dataEntries = []
 for (let i = 1; i < 1000; i++) {
     dataEntries.push(`zdanie ${i} `)
 }
+
+
 console.log(paginateArray(dataEntries, { actualPageId: 9, entriesOnPage: 50 }))
 
 
